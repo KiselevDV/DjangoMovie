@@ -51,7 +51,7 @@ class Genre(models.Model):
 
 
 class Movie(models.Model):
-    """Фильм"""
+    """Медиа Файл"""
     title = models.CharField(verbose_name='Название', max_length=100)
     tagline = models.CharField(
         verbose_name='Слоган', max_length=100, default='')
@@ -87,8 +87,8 @@ class Movie(models.Model):
         return self.title
 
     class Meta:
-        verbose_name = 'Фильм'
-        verbose_name_plural = 'Фильмы'
+        verbose_name = 'МедиаФайл'
+        verbose_name_plural = 'МедиаФайлы'
 
 
 class MovieShots(models.Model):
