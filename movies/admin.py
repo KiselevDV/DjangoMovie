@@ -2,18 +2,34 @@
 Файл для регистрации моделей и их вывода, в административной панеле Django
 
 StackedInline/TabularInline - может работать с m2m и foreignkey
+mark_safe - вывод кода HTML как тег
 """
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
+from .forms import MovieAdminForm
 from .models import (
     Category, Actor, Genre, Movie, MovieShots, RatingStar, Rating, Reviews)
 
 
 class ReviewInLines(admin.TabularInline):
-    """Отзывы на странице ..."""
+    """Отзывы на странице c ..."""
     model = Reviews
     extra = 1  # кол-во доп. пустых форм
     readonly_fields = ('name', 'email')
+
+
+class MovieShotsInLines(admin.TabularInline):
+    """Кадры из фильма на странице c ..."""
+    model = MovieShots
+    extra = 1
+    readonly_fields = ('get_image',)
+
+    def get_image(self, obj):
+        """Получение и вывод изображения"""
+        return mark_safe(f'<img src={obj.image.url} width="auto" height="190">')
+
+    get_image.short_description = 'Кадр из фильма'
 
 
 @admin.register(Category)
@@ -26,7 +42,14 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Actor)
 class ActorAdmin(admin.ModelAdmin):
     """Актёры и режиссёры"""
-    list_display = ('name', 'age')
+    list_display = ('name', 'age', 'get_image')
+    readonly_fields = ('get_image',)
+
+    def get_image(self, obj):
+        """Вывод изображения, obj - объект модели актёров"""
+        return mark_safe(f'<img src={obj.image.url} width="auto" height="80">')
+
+    get_image.short_description = 'Аватарка'
 
 
 @admin.register(Genre)
@@ -41,7 +64,8 @@ class MovieAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'url', 'draft')
     list_filter = ('category', 'year')
     search_fields = ('title', 'category__name')  # имя поля связанной модели
-    inlines = (ReviewInLines,)  # встроить связанные таблицы (m2m/foreignkey)
+    readonly_fields = ('get_image',)
+    inlines = (MovieShotsInLines, ReviewInLines)  # встроить связанные таблицы (m2m/foreignkey)
     save_on_top = True
     save_as = True  # сохранить как новый объект (для однотипных ообъектов)
     list_editable = ('draft',)
@@ -51,7 +75,7 @@ class MovieAdmin(admin.ModelAdmin):
             'fields': (('title', 'tagline'),)
         }),
         (None, {
-            'fields': ('description', 'poster')
+            'fields': ('description', ('poster', 'get_image'))
         }),
         (None, {
             'fields': (('year', 'world_premiere'), 'country')
@@ -67,12 +91,26 @@ class MovieAdmin(admin.ModelAdmin):
             'fields': (('url', 'draft'),)
         }),
     )
+    form = MovieAdminForm  # подключение формы (с ckeditor)
+
+    def get_image(self, obj):
+        """Получение и вывод изображения"""
+        return mark_safe(f'<img src={obj.poster.url} width="auto" height="120">')
+
+    get_image.short_description = 'Постер'
 
 
 @admin.register(MovieShots)
 class MovieShotsAdmin(admin.ModelAdmin):
     """Кадры из фильма"""
-    list_display = ('title', 'movie')
+    list_display = ('title', 'movie', 'get_image')
+    readonly_fields = ('get_image',)
+
+    def get_image(self, obj):
+        """Получение и вывод изображения"""
+        return mark_safe(f'<img src={obj.image.url} width="auto" height="80">')
+
+    get_image.short_description = 'Кадр из фильма'
 
 
 @admin.register(Rating)
@@ -89,3 +127,6 @@ class ReviewsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(RatingStar)
+
+admin.site.site_title = 'Django Movies'
+admin.site.site_header = 'Django Movies'
