@@ -27,7 +27,8 @@ class MovieShotsInLines(admin.TabularInline):
 
     def get_image(self, obj):
         """Получение и вывод изображения"""
-        return mark_safe(f'<img src={obj.image.url} width="auto" height="190">')
+        return mark_safe(
+            f'<img src={obj.image.url} width="auto" height="190">')
 
     get_image.short_description = 'Кадр из фильма'
 
@@ -65,7 +66,8 @@ class MovieAdmin(admin.ModelAdmin):
     list_filter = ('category', 'year')
     search_fields = ('title', 'category__name')  # имя поля связанной модели
     readonly_fields = ('get_image',)
-    inlines = (MovieShotsInLines, ReviewInLines)  # встроить связанные таблицы (m2m/foreignkey)
+    # Встроить связанные таблицы (m2m/foreignkey)
+    inlines = (MovieShotsInLines, ReviewInLines)
     save_on_top = True
     save_as = True  # сохранить как новый объект (для однотипных ообъектов)
     list_editable = ('draft',)
@@ -92,12 +94,38 @@ class MovieAdmin(admin.ModelAdmin):
         }),
     )
     form = MovieAdminForm  # подключение формы (с ckeditor)
+    actions = ('publish', 'unpublished')  # регистрация кастомных 'действий'
 
     def get_image(self, obj):
         """Получение и вывод изображения"""
-        return mark_safe(f'<img src={obj.poster.url} width="auto" height="120">')
+        return mark_safe(
+            f'<img src={obj.poster.url} width="auto" height="120">')
+
+    def publish(self, request, queryset):
+        """Опубликовать"""
+        # Обновлем все выбранные записи с 'draft=False'
+        row_update = queryset.update(draft=False)
+        if row_update == 1:
+            message_bit = '1 запись была обновлена'
+        else:
+            message_bit = f'{row_update} записей были обновлены'
+        self.message_user(request, f'{message_bit}')
+
+    def unpublished(self, request, queryset):
+        """Снять с публикации"""
+        row_update = queryset.update(draft=True)
+        if row_update == 1:
+            message_bit = '1 запись была обновлена'
+        else:
+            message_bit = f'{row_update} записей были обновлены'
+        self.message_user(request, f'{message_bit}')
 
     get_image.short_description = 'Постер'
+    publish.short_description = 'Опубликовать'
+    # У пользователя должны быть права на изменение 'change' данной записи
+    publish.allowed_permissions = ('change',)
+    unpublished.short_description = 'Снять с публикации'
+    unpublished.allowed_permissions = ('change',)
 
 
 @admin.register(MovieShots)

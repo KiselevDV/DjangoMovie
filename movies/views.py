@@ -1,13 +1,13 @@
 """
-Логика приложения. Функции или классы, которые принимают веб запросы и возращают
-ответ (HTML, перенаправление, ошибка ...)
+Логика приложения. Функции или классы, которые принимают веб запросы и
+возращают ответ (HTML, перенаправление, ошибка ...)
 """
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 
 from .forms import ReviewForm
-from .models import Movie
+from .models import Category, Actor, Movie
 
 
 # class MovieView(View):
@@ -19,12 +19,20 @@ from .models import Movie
 #         информация с клиента/браузера/фронта
 #         """
 #         movies = Movie.objects.all()
-#         return render(request, 'movies/movie_list.html', {'movie_list': movies})
+#         return render(request, 'movies/movie_list.html', {
+#             'movie_list': movies
+#         })
 
 class MovieView(ListView):
     """Список фильмов. Через специализированный класс ListView"""
     model = Movie
     queryset = Movie.objects.filter(draft=False)
+
+    # def get_context_data(self, *args, **kwargs):
+    #     """Расширяем context категориями"""
+    #     context = super().get_context_data(*args, **kwargs)
+    #     context['categories'] = Category.objects.all()
+    #     return context
 
 
 # class MovieDetailView(View):
@@ -50,14 +58,22 @@ class AddReview(View):
         if form.is_valid():
             form = form.save(commit=False)
 
-            # Для ответа на отзыв (в отправленной форме ищем ключ - name='parent')
+            # Для ответа на отзыв
+            # (в отправленной форме ищем ключ - name='parent')
             if request.POST.get('parent', None):
                 form.parent_id = int(request.POST.get('parent'))
 
             # Указывем фильм для данной формы (через его id).
             # 'movie' - поле из таблицы Review + '_id' т.к. (ForeignKey)
             # form.movie_id = pk
-            form.movie = movie  # то же, через присвоение самого объекта 'movie'
+            form.movie = movie  # то же, через присвоение самого объекта
             form.save()
 
         return redirect(movie.get_absolute_url())
+
+
+class ActorView(DetailView):
+    """Вывод информации о актёре"""
+    model = Actor
+    slug_field = 'name'
+    template_name = 'movies/actor.html'
