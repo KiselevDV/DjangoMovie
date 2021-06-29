@@ -2,11 +2,13 @@
 Логика приложения. Функции или классы, которые принимают веб запросы и
 возращают ответ (HTML, перенаправление, ошибка ...)
 """
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 
 from .forms import ReviewForm
+from .mixins import GenreYear
 from .models import Category, Actor, Movie
 
 
@@ -23,7 +25,7 @@ from .models import Category, Actor, Movie
 #             'movie_list': movies
 #         })
 
-class MovieView(ListView):
+class MovieView(GenreYear, ListView):
     """Список фильмов. Через специализированный класс ListView"""
     model = Movie
     queryset = Movie.objects.filter(draft=False)
@@ -42,10 +44,17 @@ class MovieView(ListView):
 #         movie = Movie.objects.get(url=slug)
 #         return render(request, 'movies/movie_detail.html', {'movie': movie})
 
-class MovieDetailView(DetailView):
+class MovieDetailView(GenreYear, DetailView):
     """Полное описание фильма. Через специализированный класс DetailView"""
     model = Movie
     slug_field = 'url'  # поле для поиска записи
+
+
+class ActorDetailView(GenreYear, DetailView):
+    """Вывод информации о актёре"""
+    model = Actor
+    slug_field = 'name'
+    template_name = 'movies/actor.html'
 
 
 class AddReview(View):
@@ -72,8 +81,23 @@ class AddReview(View):
         return redirect(movie.get_absolute_url())
 
 
-class ActorView(DetailView):
-    """Вывод информации о актёре"""
-    model = Actor
-    slug_field = 'name'
-    template_name = 'movies/actor.html'
+class FilterMoviesView(GenreYear, ListView):
+    """Фильтр фильмов"""
+
+    def get_queryset(self):
+        """
+        Получить все фильмы, где года (year) будут входить (__in)
+        в список годов (getlist('year')) с фронта (request.GET).
+        То же для жанров. getlist - получить данные в виде листа.
+        """
+        # Получить кверисет с логическим 'И'
+        # queryset = Movie.objects.filter(
+        #     year__in=self.request.GET.getlist('year'),
+        #     genres__in=self.request.GET.getlist('genre'),
+        # )
+        # Получить кверисет с логическим 'ИЛИ' с помощью Q
+        queryset = Movie.objects.filter(
+            Q(year__in=self.request.GET.getlist('year')) |
+            Q(genres__in=self.request.GET.getlist('genre'))
+        )
+        return queryset
