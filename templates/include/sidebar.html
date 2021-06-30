@@ -11,7 +11,9 @@
 </div>
 
 {# Создать форму для фильра по жанрам и годам. Отправит все данные списком через GET #}
-<form action="{% url 'movies:filter' %}" method="get">
+<form action="{% url 'movies:filter' %}" method="get" name="filter">
+{# Через hogan.js, AJAX #}
+{#<form action="{% url 'movies:json_filter' %}" method="get" name="filter">#}
   <div class="left-side my-4">
     <h3 class="sear-head editContent">Жанры</h3>
     <ul class="w3layouts-box-list">

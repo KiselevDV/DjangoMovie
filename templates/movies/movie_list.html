@@ -1,5 +1,7 @@
 {% extends 'movies/base.html' %}
 
+{% block title %}{% endblock title %}
+
 {% block header %} bg1 {% endblock header %}
 
 {% block movie %}
@@ -24,22 +26,29 @@
                 </div>
               </div>
               <ul class="stars">
-                <li><a href="#"><span class="fa fa-star" aria-hidden="true"></span></a></li>
-                <li><a href="#"><span class="fa fa-star" aria-hidden="true"></span></a></li>
-                <li><a href="#"><span class="fa fa-star-half-o" aria-hidden="true"></span></a>
+                <li>
+                  <a href="#"><span class="fa fa-star" aria-hidden="true"></span></a>
                 </li>
-                <li><a href="#"><span class="fa fa-star-half-o" aria-hidden="true"></span></a>
+                <li>
+                  <a href="#"><span class="fa fa-star" aria-hidden="true"></span></a>
                 </li>
-                <li><a href="#"><span class="fa fa-star-o" aria-hidden="true"></span></a></li>
+                <li>
+                  <a href="#"><span class="fa fa-star-half-o" aria-hidden="true"></span></a>
+                </li>
+                <li>
+                  <a href="#"><span class="fa fa-star-half-o" aria-hidden="true"></span></a>
+                </li>
+                <li>
+                  <a href="#"><span class="fa fa-star-o" aria-hidden="true"></span></a>
+                </li>
               </ul>
             </div>
           </div>
         </div>
       {% endfor %}
     </div>
-    <!--<div class="grid-img-right mt-4 text-right bg bg1" >
-				<span class="money editContent" >Flat 50% Off</span>
-				<a href="moviesingle.html" class="btn" >Now</a>
-		</div>-->
+    <div class="grid-img-right mt-4 text-right bg bg1">
+      {% include 'include/pagination.html' %}
+    </div>
   </div>
 {% endblock movie %}

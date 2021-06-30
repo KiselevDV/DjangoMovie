@@ -5,12 +5,17 @@ Url-ы уровня приложения
 from django.urls import path
 
 from .views import (
-    MovieView, MovieDetailView, AddReview, ActorDetailView, FilterMoviesView, )
+    MovieView, MovieDetailView, AddReview, ActorDetailView, FilterMoviesView,
+    JsonFilterMoviesView, AddStarRating, )
 
 app_name = 'movies'
 urlpatterns = [
-    # Фильтрация по фгодам и жанрам
+    # Добавление рейтинга
+    path("add-rating/", AddStarRating.as_view(), name='add_rating'),
+
+    # Фильтрация по годам и жанрам
     path("filter/", FilterMoviesView.as_view(), name='filter'),
+    path("json-filter/", JsonFilterMoviesView.as_view(), name='json_filter'),
 
     # Отывы к фильму
     path('review/<int:pk>', AddReview.as_view(), name='add_review'),

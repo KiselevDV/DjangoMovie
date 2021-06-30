@@ -7,7 +7,7 @@ from django import forms
 # Виджет для загрузки фалов - ckeditor_uploader
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
-from .models import Movie, Reviews
+from .models import Movie, Rating, RatingStar, Reviews
 
 
 class ReviewForm(forms.ModelForm):
@@ -32,3 +32,16 @@ class MovieAdminForm(forms.ModelForm):
     class Meta:
         model = Movie
         fields = '__all__'
+
+
+class RatingForm(forms.ModelForm):
+    """Форма добавления рейтинга"""
+    star = forms.ModelChoiceField(
+        queryset=RatingStar.objects.all(),
+        widget=forms.RadioSelect(),
+        empty_label=None,
+    )
+
+    class Meta:
+        model = Rating
+        fields = ('star',)
