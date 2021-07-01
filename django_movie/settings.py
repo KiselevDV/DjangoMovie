@@ -57,17 +57,16 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
 
-    # Мои приложения
-    'movies.apps.MoviesConfig',
-    'contact.apps.ContactConfig',
-
-    # Сторонние плагины
+    # Сторонние библиотеки
     'ckeditor',
     'ckeditor_uploader',  # для загрузки фалов через ckeditor
     'snowpenguin.django.recaptcha3',  # reCAPTCHA3
     'allauth',  # авторизация и регистрация
     'allauth.account',
 
+    # Мои приложения
+    'movies.apps.MoviesConfig',
+    'contact.apps.ContactConfig',
 ]
 # Список подключённых промежуточных слоёв
 MIDDLEWARE = [
@@ -152,8 +151,12 @@ USE_I18N = True
 USE_L10N = True
 # Необходимость поддержки временных зон
 USE_TZ = True
+
+
 # Языки для перевода
-gettext = lambda s: s
+def gettext(s): return s
+
+
 LANGUAGES = (
     ('ru', gettext('Russia')),
     ('en', gettext('English')),

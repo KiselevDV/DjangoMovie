@@ -164,7 +164,7 @@ class AddStarRating(View):
                 ip=self.get_client_ip(request),
                 # <input type="hidden" value="{{ movie.id }}" name="movie">
                 movie_id=int(request.POST.get('movie')),
-                # <input type="radio" id="rating{{ v }}" name="star" value="{{ v }}">
+                # <input type="radio" id="rating{{ v }}" name="star" ...>
                 defaults={'star_id': int(request.POST.get('star'))}
             )
             return HttpResponse(status=201)

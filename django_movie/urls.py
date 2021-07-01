@@ -30,7 +30,8 @@ urlpatterns = [
 # Контент по урлам ниже будет работать с переводом
 urlpatterns += i18n_patterns(
     path('accounts/', include('allauth.urls')),
-    path('pages/', include('django.contrib.flatpages.urls')),  # простые страницы
+    # Простые (статичные) страницы
+    path('pages/', include('django.contrib.flatpages.urls')),
     path('contact/', include('contact.urls')),  # для отправки email
     path('', include('movies.urls')),
 )
