@@ -35,7 +35,10 @@ ALLOWED_HOSTS = []
 # Application definition
 # Активные приложения
 INSTALLED_APPS = [
-    # Системные приложения
+    # Перевод контента, приложение для создания мультиязычного сайта
+    'modeltranslation',
+
+    # Системные приложения (по умолчанию)
     # Сайт администрирования
     'django.contrib.admin',
     # Подсистема аутентификации
@@ -49,12 +52,21 @@ INSTALLED_APPS = [
     # Подсистема для управления статическим содержимым сайта
     'django.contrib.staticfiles',
 
+    # Системные приложения (доп.)
+    # Для генерации простых-статичных страниц и django-allauth
+    'django.contrib.sites',
+    'django.contrib.flatpages',
+
     # Мои приложения
     'movies.apps.MoviesConfig',
+    'contact.apps.ContactConfig',
 
     # Сторонние плагины
     'ckeditor',
     'ckeditor_uploader',  # для загрузки фалов через ckeditor
+    'snowpenguin.django.recaptcha3',  # reCAPTCHA3
+    'allauth',  # авторизация и регистрация
+    'allauth.account',
 
 ]
 # Список подключённых промежуточных слоёв
@@ -66,6 +78,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Простые страницы
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    # Для перевода страниц
+    'django.middleware.locale.LocaleMiddleware',
 ]
 # Указывает на модуль с корневыми шаблонами приложения
 ROOT_URLCONF = 'django_movie.urls'
@@ -98,6 +115,13 @@ DATABASES = {
     }
 }
 
+# Бэкенды проекта
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    # Бекэнд для авторизации через allauth
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -128,6 +152,14 @@ USE_I18N = True
 USE_L10N = True
 # Необходимость поддержки временных зон
 USE_TZ = True
+# Языки для перевода
+gettext = lambda s: s
+LANGUAGES = (
+    ('ru', gettext('Russia')),
+    ('en', gettext('English')),
+)
+# Путь к директории со статикой
+LOCALE_PATHS = (BASE_DIR / 'locale',)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -147,3 +179,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Путь для загружаемых файлов, через CKEditor
 CKEDITOR_UPLOAD_PATH = "uploads/"
+
+# reCAPTCHA
+RECAPTCHA_PUBLIC_KEY = '6LcD8mcbAAAAAJkTO2f-TeRBiG322dawhupu89gx'
+RECAPTCHA_PRIVATE_KEY = '6LcD8mcbAAAAAK0dJpOfFlM3swILvBQAyrHbabEg'
+RECAPTCHA_DEFAULT_ACTION = 'generic'
+RECAPTCHA_SCORE_THRESHOLD = 0.5
+
+# Для генерации простых страниц и django-allauth
+SITE_ID = 1

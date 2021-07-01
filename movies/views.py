@@ -50,12 +50,14 @@ class MovieView(GenreYear, ListView):
 class MovieDetailView(GenreYear, DetailView):
     """Полное описание фильма. Через специализированный класс DetailView"""
     model = Movie
+    queryset = Movie.objects.filter(draft=False)
     slug_field = 'url'  # поле для поиска записи
 
     def get_context_data(self, **kwargs):
         """Добавляем форму рейтинга, через переменную 'star_form'"""
         context = super().get_context_data(**kwargs)
         context['star_form'] = RatingForm()
+        context['form'] = ReviewForm()
         return context
 
 
@@ -168,3 +170,19 @@ class AddStarRating(View):
             return HttpResponse(status=201)
         else:
             return HttpResponse(status=400)
+
+
+class Search(ListView):
+    """Поиск фильмов"""
+    paginate_by = 3
+
+    def get_queryset(self):
+        # Данные из формы с name='q' (<input type="search" placeholder="
+        # Введите название ..." name="q" class="form-control" required="">)
+        return Movie.objects.filter(title__icontains=self.request.GET.get('q'))
+
+    def get_context_data(self, *args, **kwargs):
+        """Расширить контекст для пагинации"""
+        context = super().get_context_data(*args, **kwargs)
+        context['q'] = f"q={self.request.GET.get('q')}&"
+        return context

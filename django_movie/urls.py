@@ -16,6 +16,7 @@ Including another URLconf
 Главный URL проекта
 """
 from django.conf import settings
+from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
@@ -23,8 +24,16 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('', include('movies.urls')),
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
+
+# Контент по урлам ниже будет работать с переводом
+urlpatterns += i18n_patterns(
+    path('accounts/', include('allauth.urls')),
+    path('pages/', include('django.contrib.flatpages.urls')),  # простые страницы
+    path('contact/', include('contact.urls')),  # для отправки email
+    path('', include('movies.urls')),
+)
 
 # Если DEBUG = True, в django_movie.settings, то Django раздаёт файлы из media
 if settings.DEBUG:

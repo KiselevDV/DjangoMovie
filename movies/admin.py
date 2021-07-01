@@ -3,9 +3,12 @@
 
 StackedInline/TabularInline - может работать с m2m и foreignkey
 mark_safe - вывод кода HTML как тег
+TranslationAdmin - для моделей участвующих в переводе
 """
 from django.contrib import admin
 from django.utils.safestring import mark_safe
+
+from modeltranslation.admin import TranslationAdmin
 
 from .forms import MovieAdminForm
 from .models import (
@@ -34,14 +37,14 @@ class MovieShotsInLines(admin.TabularInline):
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(TranslationAdmin):
     """Категории"""
     list_display = ('id', 'name', 'url')
     list_display_links = ('id', 'name')
 
 
 @admin.register(Actor)
-class ActorAdmin(admin.ModelAdmin):
+class ActorAdmin(TranslationAdmin):
     """Актёры и режиссёры"""
     list_display = ('name', 'age', 'get_image')
     readonly_fields = ('get_image',)
@@ -54,13 +57,13 @@ class ActorAdmin(admin.ModelAdmin):
 
 
 @admin.register(Genre)
-class GenreAdmin(admin.ModelAdmin):
+class GenreAdmin(TranslationAdmin):
     """Жанры"""
     list_display = ('name', 'url')
 
 
 @admin.register(Movie)
-class MovieAdmin(admin.ModelAdmin):
+class MovieAdmin(TranslationAdmin):
     """Фильмы"""
     list_display = ('title', 'category', 'url', 'draft')
     list_filter = ('category', 'year')
@@ -129,7 +132,7 @@ class MovieAdmin(admin.ModelAdmin):
 
 
 @admin.register(MovieShots)
-class MovieShotsAdmin(admin.ModelAdmin):
+class MovieShotsAdmin(TranslationAdmin):
     """Кадры из фильма"""
     list_display = ('title', 'movie', 'get_image')
     readonly_fields = ('get_image',)

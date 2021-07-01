@@ -6,10 +6,13 @@ from django.urls import path
 
 from .views import (
     MovieView, MovieDetailView, AddReview, ActorDetailView, FilterMoviesView,
-    JsonFilterMoviesView, AddStarRating, )
+    JsonFilterMoviesView, AddStarRating, Search, )
 
 app_name = 'movies'
 urlpatterns = [
+    # Поиск по фильмам
+    path('search/', Search.as_view(), name='search'),
+
     # Добавление рейтинга
     path("add-rating/", AddStarRating.as_view(), name='add_rating'),
 
