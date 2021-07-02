@@ -19,6 +19,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+        ordering = ('name',)
 
 
 class Actor(models.Model):
@@ -38,6 +39,7 @@ class Actor(models.Model):
     class Meta:
         verbose_name = 'Актёры и режиссёры'
         verbose_name_plural = 'Актёры и режиссёры'
+        ordering = ('name',)
 
 
 class Genre(models.Model):
@@ -52,6 +54,7 @@ class Genre(models.Model):
     class Meta:
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
+        ordering = ('name',)
 
 
 class Movie(models.Model):
@@ -103,6 +106,7 @@ class Movie(models.Model):
     class Meta:
         verbose_name = 'МедиаФайл'
         verbose_name_plural = 'МедиаФайлы'
+        ordering = ('title',)
 
 
 class MovieShots(models.Model):
@@ -121,6 +125,7 @@ class MovieShots(models.Model):
     class Meta:
         verbose_name = 'Кадр из фильма'
         verbose_name_plural = 'Кадры из фильма'
+        ordering = ('title',)
 
 
 class RatingStar(models.Model):
