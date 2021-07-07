@@ -61,8 +61,10 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',  # для загрузки фалов через ckeditor
     'snowpenguin.django.recaptcha3',  # reCAPTCHA3
-    'allauth',  # авторизация и регистрация
-    'allauth.account',
+    'allauth',  # авторизация и регистрация через allauth
+    'allauth.account',  # авторизация и регистрация
+    'allauth.socialaccount',  # через соц.сети
+    'allauth.socialaccount.providers.vk',  # через ВК
 
     # Мои приложения
     'movies.apps.MoviesConfig',
@@ -116,8 +118,8 @@ DATABASES = {
 
 # Бэкенды проекта
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
     # Бекэнд для авторизации через allauth
+    'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
@@ -144,7 +146,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Код языка (по умолчанию)
 LANGUAGE_CODE = 'ru'
 # Временная зона (по умолчанию)
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Minsk'
 
 USE_I18N = True
 
@@ -152,11 +154,16 @@ USE_L10N = True
 # Необходимость поддержки временных зон
 USE_TZ = True
 
+# Для авторизации/регистрации/аутентификации. Django-allauth
+LOGIN_REDIRECT_URL = '/'  # перенаправление после входа на сайт
+# Количество дней для подтвеждения email-а
+ACCOUNT_USERNAME_MIN_LENGTH = 4  # мин. кол-во символов для логина
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+# dummy - крутиться в консоле, для smtp заменить на smtp
+EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 # Языки для перевода
-def gettext(s): return s
-
-
+gettext = lambda s: s
 LANGUAGES = (
     ('ru', gettext('Russia')),
     ('en', gettext('English')),

@@ -5,31 +5,51 @@
     <!-- nav -->
     <nav class="py-4">
       <div id="logo">
-        <h1>
-          <a href="index.html" class="editContent"
-             style="outline: none; outline-offset: -2px; cursor: inherit; color: rgb(255, 255, 255); font-size: 40px; background-color: rgba(0, 0, 0, 0); font-family: &quot;Source Sans Pro&quot;, sans-serif;">DjangoMovie</a>
+        <h1><a href="#" class="editContent"
+               style="outline: none; outline-offset: -2px; cursor: inherit; color: rgb(255, 255, 255); font-size: 40px; background-color: rgba(0, 0, 0, 0); font-family: Source Sans Pro;, sans-serif;">DjangoMovie</a>
         </h1>
       </div>
+
       <label for="drop" class="toggle">Menu</label>
       <input type="checkbox" id="drop">
       <ul class="menu mt-2">
-        <li class="active"><a href="index.html">Главная</a></li>
+        <li class="active"><a href="#">Главная</a></li>
         <li>
           <!-- First Tier Drop Down -->
-          <label for="drop-2" class="toggle">Категории <span class="fa fa-angle-down"
-                                                             aria-hidden="true"></span>
+          <label for="drop-2" class="toggle">Категории
+            <span class="fa fa-angle-down" aria-hidden="true"></span>
           </label>
-          <a href="#">Категории <span class="fa fa-angle-down" aria-hidden="true"></span></a>
+          <a href="#">Категории
+            <span class="fa fa-angle-down" aria-hidden="true"></span>
+          </a>
           <input type="checkbox" id="drop-2">
           <ul>
             {% get_categories as categories %}
             {% for category in categories %}
-              <li><a href="/">{{ category }}</a></li>
+              <li><a href="/">{{ category.name }}</a></li>
             {% endfor %}
           </ul>
         </li>
-        <li><a href="contact.html"
-               style="color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase;">Вход</a>
+        <li>
+          {# Вход/выход с сайта через allauth. user.is_authenticated - если пользователь авторизован #}
+        <li>
+          {% if user.is_authenticated %}
+            <span>{{ user.username }}</span>
+            <a href="{% url 'account_logout' %}"
+               style="color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase;">
+              Выход
+            </a>
+          {% else %}
+            {# Если пользователь не авторизован, то вход либо регистрация #}
+            <a href="{% url 'account_login' %}"
+               style="color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase;">
+              Вход
+            </a>
+            <a href="{% url 'account_signup' %}"
+               style="color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase;">
+              Регистрация
+            </a>
+          {% endif %}
         </li>
         {# Форма перевода. Отображает все, зарегистрированные в настройках, #}
         {# языки и осуществляет переключение между ними. Для динамического контента #}
