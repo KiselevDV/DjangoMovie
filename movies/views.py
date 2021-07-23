@@ -1,6 +1,8 @@
 """
 Логика приложения. Функции или классы, которые принимают веб запросы и
 возращают ответ (HTML, перенаправление, ошибка ...)
+
+request - запрос от клиента; response - ответ клиенту
 """
 from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
@@ -186,3 +188,18 @@ class Search(ListView):
         context = super().get_context_data(*args, **kwargs)
         context['q'] = f"q={self.request.GET.get('q')}&"
         return context
+
+
+# Доп. уроки. Джанго под капотом
+def func(request, *args, **kwargs):  # blabla, pk  # url
+    # return HttpResponse('Hi Django', status=200)
+    print(kwargs)
+    # URL-ы для теста
+    print(request.GET)
+    # http://127.0.0.1:8000/en/test/django/123456789/?page=33&test=roro&stream=django+http
+    # print(request.GET.get('page'))
+    # http://127.0.0.1:8000/en/test/django/123456789/?filters=films,movie,genre
+    # print(request.GET.get('filters'))
+    # http://127.0.0.1:8000/en/test/django/123456789/?filters=films&filters=movie&filters=genre
+    print(request.GET.getlist('filters'))
+    return render(request, 'base.html', {'title': 'Test H1'})

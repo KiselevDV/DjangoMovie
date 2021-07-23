@@ -6,10 +6,14 @@ from django.urls import path
 
 from .views import (
     MovieView, MovieDetailView, AddReview, ActorDetailView, FilterMoviesView,
-    JsonFilterMoviesView, AddStarRating, Search, )
+    JsonFilterMoviesView, AddStarRating, Search, func, )
 
 app_name = 'movies'
 urlpatterns = [
+    # Доп. уроки. Джанго под капотом
+    path('test/<str:blabla>/<int:pk>/', func),  # или
+    # path('test/<path:url>/', func),  # без разделения url
+
     # Поиск по фильмам
     path('search/', Search.as_view(), name='search'),
 
@@ -26,5 +30,5 @@ urlpatterns = [
     # Главная страница, детальные данные о фильмах, актёрах и режиссёрах
     path('actor/<str:slug>', ActorDetailView.as_view(), name='actor_detail'),
     path('<slug:slug>/', MovieDetailView.as_view(), name='movie_detail'),
-    path('', MovieView.as_view(), name='head_page')
+    path('', MovieView.as_view(), name='head_page'),
 ]

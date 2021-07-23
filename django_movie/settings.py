@@ -70,11 +70,13 @@ INSTALLED_APPS = [
     'movies.apps.MoviesConfig',
     'contact.apps.ContactConfig',
 ]
-# Список подключённых промежуточных слоёв
+# Список подключённых промежуточных слоёв.
+# Есть зависимость от порядка расположения в списке
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    # Следит за CSRF токенами
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
