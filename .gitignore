@@ -1,7 +1,7 @@
 .env/
 .idea/
 
-#db.sqlite3
+db.sqlite3
 
 __pycache__/
 */__pycache__/
@@ -21,3 +21,6 @@ __pycache__/
 
 #media/*
 #!*media
+
+#django_movie/settings_local.py
+#django_movie/settings_prod.py

@@ -29,6 +29,8 @@ urlpatterns = [
 
 # Контент по урлам ниже будет работать с переводом
 urlpatterns += i18n_patterns(
+    # Оптимизация производительности, запросы
+    path('silk/', include('silk.urls', namespace='silk')),
     path('accounts/', include('allauth.urls')),
     # Простые (статичные) страницы
     path('pages/', include('django.contrib.flatpages.urls')),
@@ -37,6 +39,7 @@ urlpatterns += i18n_patterns(
 )
 
 # Если DEBUG = True, в django_movie.settings, то Django раздаёт файлы из media
+# т.е. для разработки статику раздаёт сам Django, в разработке - Nginx/Apache
 if settings.DEBUG:
     urlpatterns += static(
         settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

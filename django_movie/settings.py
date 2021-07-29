@@ -14,7 +14,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 
-from .other_settings import CKEDITOR_CONFIGS
+from .settings_extra import CKEDITOR_CONFIGS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # Построение пути к корню проекта
@@ -24,13 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-fiw+p3a2i3$-ejx*vm(e=b7@_4*i1da74z#8vscpfe)*brrheq'
+# SECRET_KEY = 'django-insecure-fiw+p3a2i3$-ejx*vm(e=b7@_4*i1da74z#8vscpfe)*brrheq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Режим отладки проекта
-DEBUG = True
+# DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # Application definition
 # Активные приложения
@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'allauth.account',  # авторизация и регистрация
     'allauth.socialaccount',  # через соц.сети
     'allauth.socialaccount.providers.vk',  # через ВК
+    'silk',  # оптимизация производительности, работа с запросами ORM
 
     # Мои приложения
     'movies.apps.MoviesConfig',
@@ -86,6 +87,8 @@ MIDDLEWARE = [
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     # Для перевода страниц
     'django.middleware.locale.LocaleMiddleware',
+    # Работа с запросами в БД (проверка работы ORM)
+    'silk.middleware.SilkyMiddleware',
 ]
 # Указывает на модуль с корневыми шаблонами приложения
 ROOT_URLCONF = 'django_movie.urls'
@@ -111,12 +114,12 @@ WSGI_APPLICATION = 'django_movie.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 # Словарь с настройками для всех баз данных проекта
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # Бэкенды проекта
 AUTHENTICATION_BACKENDS = (
@@ -177,9 +180,9 @@ LOCALE_PATHS = (BASE_DIR / 'locale',)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_DIR = BASE_DIR / 'static'
-STATICFILES_DIRS = (STATIC_DIR,)
-# STATIC_ROOT = BASE_DIR / 'static'
+# STATIC_DIR = BASE_DIR / 'static'
+# STATICFILES_DIRS = (STATIC_DIR,)
+# STATIC_ROOT = BASE_DIR / 'static'  # для команды collectstatic
 
 MEDIA_URL = '/media/'  # url - имя GET адреса
 MEDIA_ROOT = BASE_DIR / 'media'  # директоря хранения медиа
@@ -200,3 +203,9 @@ RECAPTCHA_SCORE_THRESHOLD = 0.5
 
 # Для генерации простых страниц и django-allauth
 SITE_ID = 1
+
+# Подключение настроек для дев и прод серверов
+try:
+    from .settings_local import *
+except ImportError:  # Нет такого файла => prod
+    from .settings_prod import *
